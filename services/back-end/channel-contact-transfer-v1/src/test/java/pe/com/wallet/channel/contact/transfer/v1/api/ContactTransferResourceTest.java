@@ -172,7 +172,27 @@ class ContactTransferResourceTest {
     void verifyTransferUnhappyPath400() {
         String requestBody = """
             {
-              "amount": 0
+              "amount": 0.09
+            }
+            """;
+
+        given()
+            .contentType(ContentType.JSON)
+            .header("sessionId", SESSION_ID)
+            .header("Authorization", AUTHORIZATION)
+            .body(requestBody)
+        .when()
+            .post("/contact-transfers/authorization/verify")
+        .then()
+            .statusCode(400)
+            .body("code", equalTo("HB0305"));
+    }
+
+    @Test
+    void verifyTransferRejectsAmountAboveMaximum() {
+        String requestBody = """
+            {
+              "amount": 500.01
             }
             """;
 

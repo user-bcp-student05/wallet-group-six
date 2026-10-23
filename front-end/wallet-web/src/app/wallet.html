@@ -35,14 +35,14 @@
           <div class="form-panel auth-panel">
             <div class="auth-heading"><span class="section-kicker">HOLA DE NUEVO</span><h2>Ingresa a tu<br />billetera</h2><p>Usa tus datos para continuar.</p></div>
             @if (notice()) { <div class="notice-banner"><svg lucideBadgeCheck [size]="18"></svg>{{ notice() }}</div> }
-            <form class="form-stack" (ngSubmit)="login()">
+            <form #loginForm="ngForm" class="form-stack" (ngSubmit)="login()">
               <label class="field-label" for="login-phone">Número de celular</label>
-              <div class="input-wrap"><span class="prefix-code">+51</span><input id="login-phone" name="loginPhone" type="tel" [(ngModel)]="loginPhone" placeholder="987 654 321" inputmode="tel" autocomplete="tel-national" required pattern="[0-9 +()-]{9,16}" /><svg lucideSmartphone class="field-icon" [size]="18"></svg></div>
+              <div class="input-wrap"><span class="prefix-code">+51</span><input id="login-phone" name="loginPhone" type="tel" [(ngModel)]="loginPhone" placeholder="987654321" inputmode="numeric" autocomplete="tel-national" required minlength="9" maxlength="9" pattern="[0-9]{9}" title="Ingresa exactamente 9 dígitos" /><svg lucideSmartphone class="field-icon" [size]="18"></svg></div>
               <label class="field-label" for="login-password">Contraseña</label>
-              <div class="input-wrap"><input id="login-password" name="loginPassword" [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="loginPassword" placeholder="Ingresa tu contraseña" autocomplete="current-password" required minlength="4" /><button class="field-action" type="button" [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="showPassword.set(!showPassword())"><svg lucideEyeOff [size]="18"></svg></button></div>
+              <div class="input-wrap"><input id="login-password" name="loginPassword" [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="loginPassword" placeholder="Ingresa tu contraseña" autocomplete="current-password" required minlength="4" maxlength="6" title="Máximo 6 caracteres" /><button class="field-action" type="button" [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="showPassword.set(!showPassword())"><svg lucideEyeOff [size]="18"></svg></button></div>
               <button class="text-link forgot-link" type="button">¿Olvidaste tu contraseña?</button>
               @if (errorMessage()) { <p class="form-error" role="alert">{{ errorMessage() }}</p> }
-              <button class="primary-button full-button" type="submit">Ingresar <svg lucideArrowRight [size]="18"></svg></button>
+              <button class="primary-button full-button" type="submit" [disabled]="loginForm.invalid">Ingresar <svg lucideArrowRight [size]="18"></svg></button>
             </form>
             <div class="signup-prompt"><span>¿Aún no tienes una cuenta?</span><button type="button" class="text-link" (click)="openAffiliation()">Afíliate aquí</button></div>
             <div class="auth-footnote"><svg lucideLockKeyhole [size]="15"></svg> Tus datos están protegidos</div>
@@ -54,14 +54,14 @@
             <form class="form-stack affiliation-form" (ngSubmit)="affiliate()">
               <div class="field-row">
                 <div class="field-group"><label class="field-label" for="document-type">Tipo de documento</label><div class="select-wrap"><select id="document-type" name="documentType" [(ngModel)]="documentType"><option value="DNI">DNI</option><option value="CE">Carné de extranjería</option><option value="PASSPORT">Pasaporte</option></select><svg lucideArrowRight class="select-chevron" [size]="15"></svg></div></div>
-                <div class="field-group"><label class="field-label" for="document-number">N.º de documento</label><input id="document-number" class="text-input" name="documentNumber" [(ngModel)]="documentNumber" placeholder="Ej. 71234567" required minlength="5" maxlength="15" /></div>
+                <div class="field-group"><label class="field-label" for="document-number">N.º de documento</label><input id="document-number" class="text-input" name="documentNumber" [(ngModel)]="documentNumber" [attr.placeholder]="documentType === 'DNI' ? '8 dígitos' : documentType === 'CE' ? '9 dígitos' : 'Número de pasaporte'" [attr.inputmode]="documentType === 'PASSPORT' ? 'text' : 'numeric'" [attr.minlength]="documentType === 'DNI' ? 8 : documentType === 'CE' ? 9 : 5" [attr.maxlength]="documentType === 'DNI' ? 8 : documentType === 'CE' ? 9 : 15" [attr.pattern]="documentType === 'DNI' ? '[0-9]{8}' : documentType === 'CE' ? '[0-9]{9}' : '[A-Za-z0-9]{5,15}'" [attr.title]="documentType === 'DNI' ? 'Ingresa exactamente 8 dígitos' : documentType === 'CE' ? 'Ingresa exactamente 9 dígitos' : 'Ingresa de 5 a 15 caracteres alfanuméricos'" required /></div>
               </div>
               <label class="field-label" for="affiliation-phone">Número de celular</label>
-              <div class="input-wrap"><span class="prefix-code">+51</span><input id="affiliation-phone" name="affiliationPhone" type="tel" [(ngModel)]="affiliationPhone" placeholder="987 654 321" inputmode="tel" required pattern="[0-9 +()-]{9,16}" /><svg lucidePhone class="field-icon" [size]="17"></svg></div>
+              <div class="input-wrap"><span class="prefix-code">+51</span><input id="affiliation-phone" name="affiliationPhone" type="tel" [(ngModel)]="affiliationPhone" placeholder="987654321" inputmode="numeric" required minlength="9" maxlength="9" pattern="[0-9]{9}" title="Ingresa exactamente 9 dígitos" /><svg lucidePhone class="field-icon" [size]="17"></svg></div>
               <label class="field-label" for="email">Correo electrónico</label>
               <div class="input-wrap"><input id="email" name="email" type="email" [(ngModel)]="email" placeholder="nombre@correo.com" autocomplete="email" required /><svg lucideMail class="field-icon" [size]="17"></svg></div>
               <label class="field-label" for="new-password">Crea una contraseña</label>
-              <div class="input-wrap"><input id="new-password" name="password" [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" required minlength="8" /><button class="field-action" type="button" aria-label="Mostrar u ocultar contraseña" (click)="showPassword.set(!showPassword())"><svg lucideEye [size]="18"></svg></button></div>
+              <div class="input-wrap"><input id="new-password" name="password" [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="password" placeholder="6 caracteres" autocomplete="new-password" required minlength="6" maxlength="6" title="La contraseña debe tener 6 caracteres" /><button class="field-action" type="button" aria-label="Mostrar u ocultar contraseña" (click)="showPassword.set(!showPassword())"><svg lucideEye [size]="18"></svg></button></div>
               @if (errorMessage()) { <p class="form-error" role="alert">{{ errorMessage() }}</p> }
               <button class="primary-button full-button" type="submit" [disabled]="busy()">{{ busy() ? 'Enviando solicitud...' : 'Afiliarme' }} <svg lucideArrowRight [size]="18"></svg></button>
             </form>
@@ -94,12 +94,12 @@
         @if (step() === 'phone') {
           <div class="journey-panel">
             <span class="section-kicker">PAGO A CONTACTO</span><h1>¿A quién le<br />enviamos?</h1><p class="panel-description">Ingresa el celular asociado a la billetera de tu destinatario.</p>
-            <form class="form-stack journey-form" (ngSubmit)="searchRecipient()">
+            <form #recipientForm="ngForm" class="form-stack journey-form" (ngSubmit)="searchRecipient()">
               <label class="field-label" for="recipient-phone">Celular del destinatario</label>
-              <div class="input-wrap large-input"><span class="prefix-code">+51</span><input id="recipient-phone" name="recipientPhone" type="tel" [(ngModel)]="recipientPhone" placeholder="987 654 321" inputmode="tel" autocomplete="tel-national" required pattern="[0-9 +()-]{9,16}" /><svg lucidePhone class="field-icon" [size]="19"></svg></div>
+              <div class="input-wrap large-input"><span class="prefix-code">+51</span><input id="recipient-phone" name="recipientPhone" type="tel" [(ngModel)]="recipientPhone" placeholder="987654321" inputmode="numeric" autocomplete="tel-national" required minlength="9" maxlength="9" pattern="[0-9]{9}" title="Ingresa exactamente 9 dígitos" /><svg lucidePhone class="field-icon" [size]="19"></svg></div>
               <p class="field-hint">Solo necesitas su número de celular para empezar.</p>
               @if (errorMessage()) { <p class="form-error" role="alert">{{ errorMessage() }}</p> }
-              <button class="primary-button full-button" type="submit" [disabled]="busy()">{{ busy() ? 'Buscando billeteras...' : 'Continuar' }} <svg lucideArrowRight [size]="18"></svg></button>
+              <button class="primary-button full-button" type="submit" [disabled]="busy() || recipientForm.invalid">{{ busy() ? 'Buscando billeteras...' : 'Continuar' }} <svg lucideArrowRight [size]="18"></svg></button>
             </form>
           </div>
         }
@@ -125,8 +125,8 @@
             <div class="recipient-strip"><span class="recipient-avatar"><svg lucideUserRound [size]="19"></svg></span><span><strong>{{ formatPhone(recipientPhone) }}</strong><small>{{ selectedEntity()?.entity }} · Destinatario</small></span><svg lucideCheckCircle2 class="verified-icon" [size]="19"></svg></div>
             <form class="form-stack journey-form" (ngSubmit)="verifyTransfer()">
               <label class="field-label" for="amount">Monto</label>
-              <div class="amount-wrap"><span>S/</span><input id="amount" name="amount" type="number" [(ngModel)]="amount" placeholder="0.00" min="0.01" max="99999999.99" step="0.01" inputmode="decimal" required /><span class="currency-label">SOLES</span></div>
-              <p class="field-hint">Monto mínimo S/ 0.01</p>
+              <div class="amount-wrap"><span>S/</span><input id="amount" name="amount" type="number" [(ngModel)]="amount" placeholder="0.00" min="0.10" max="500.00" step="0.01" inputmode="decimal" required /><span class="currency-label">SOLES</span></div>
+              <p class="field-hint">Monto mínimo S/ 0.10 · máximo S/ 500.00</p>
               @if (errorMessage()) { <p class="form-error" role="alert">{{ errorMessage() }}</p> }
               <button class="primary-button full-button" type="submit" [disabled]="busy()">{{ busy() ? 'Verificando...' : 'Continuar' }} <svg lucideArrowRight [size]="18"></svg></button>
             </form>

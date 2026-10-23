@@ -92,7 +92,7 @@ export class App {
   password = '';
 
   constructor(private readonly api: ContactTransferApi) {
-    this.loginPhone = this.originPhone();
+    this.loginPhone = this.originPhone().replace(/^\+51/, '');
   }
 
   get isAuthScreen(): boolean {
@@ -114,6 +114,14 @@ export class App {
 
   login(): void {
     this.clearMessages();
+    if (!/^\d{9}$/.test(this.loginPhone)) {
+      this.errorMessage.set('Ingresa un número de celular válido de 9 dígitos.');
+      return;
+    }
+    if (this.loginPassword.length < 4 || this.loginPassword.length > 6) {
+      this.errorMessage.set('Ingresa una contraseña de 4 a 6 caracteres.');
+      return;
+    }
     this.originPhone.set(this.toInternationalPhone(this.loginPhone));
     if (typeof sessionStorage !== 'undefined') {
       sessionStorage.setItem('wallet-origin-phone', this.originPhone());
@@ -160,6 +168,10 @@ export class App {
 
   async searchRecipient(): Promise<void> {
     this.clearMessages();
+    if (!/^\d{9}$/.test(this.recipientPhone)) {
+      this.errorMessage.set('Ingresa un número de celular válido de 9 dígitos.');
+      return;
+    }
     this.busy.set(true);
     try {
       const phone = this.toInternationalPhone(this.recipientPhone);
