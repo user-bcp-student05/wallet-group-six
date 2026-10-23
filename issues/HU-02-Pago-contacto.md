@@ -29,6 +29,15 @@ para saber si se realizó sin correr el riesgo de pagar dos veces.
 - Se emite el evento `payer_payment_succeeded` una sola vez al confirmar el éxito. MAU cuenta wallets únicas con al menos una transferencia elegible confirmada como exitosa en el mes calendario; excluye pruebas y operaciones anuladas o totalmente revertidas antes del cierre del mes. Una reversión parcial no elimina la actividad.
 - El abandono se calcula por `checkout_id` único: checkouts iniciados que no alcanzan éxito confirmado dentro de las 24 horas / checkouts iniciados. Los pendientes se reportan aparte. La meta para el trimestre posterior al lanzamiento es reducir esta tasa de 30% a 8%.
 
+## Alcance de integraciones y mocks
+
+- Para esta entrega usamos **mocks propios del equipo** y no los mocks definidos en el documento inicial de la hackathon. El contrato de nuestros mocks está en `services/api/ux-contact-transfer-v1.yaml` y su implementación en `services/back-end/channel-contact-transfer-v1`.
+- Los proveedores, sus estados, señales de resultado definitivo, ventanas de consulta y límites (regulatorio, contractual y tope MVP) se **simulan con configuración y datos sintéticos propios**. No representan contratos ni límites reales de partners.
+- Los resultados de pago (éxito, fallo, expiración, timeout, notificación tardía o contradictoria) se provocan con casos de prueba controlados de nuestros mocks; sus disparadores son propios del mock y no forman parte del contrato de negocio.
+- Los comportamientos de esta HU que nuestros mocks aún no cubren (estados visibles, límites por proveedor/canal, idempotencia, historial, evento `payer_payment_succeeded`, MAU y abandono) se simularán con mocks propios, definidos y versionados en el repositorio antes de automatizar sus pruebas.
+- Los reportes de MAU y abandono calculados sobre datos de los mocks son sintéticos y no se comparan como resultados reales con las metas de negocio.
+- Este alcance no cambia los criterios de aceptación ni las decisiones de producto: solo delimita contra qué se verifican en esta entrega. Pasar a producción exige reemplazar los mocks por integraciones reales con partners y por la configuración contractual de cada proveedor.
+
 ## Criterios de aceptación
 
 1. Antes de confirmar, se muestra la identidad del destino y el monto correspondientes al intento.

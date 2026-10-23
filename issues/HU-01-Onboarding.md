@@ -23,6 +23,13 @@ para activar mi wallet y empezar a pagar sin abandonar el proceso.
 - CAC se calcula mensualmente como gasto directo de adquisición atribuible dividido entre nuevos usuarios con wallet activada atribuibles. Se usa atribución de primer contacto, capturada al inicio del onboarding, con ventana de 30 días para activar. El gasto directo incluye medios pagados, agencias/afiliados y recompensas de referido; excluye costos de producto y gastos generales. Los usuarios y gastos sin atribución se reportan aparte, no se reasignan.
 - El onboarding no comunica límites numéricos por proveedor. La pantalla de pago valida y muestra el límite efectivo antes de confirmar una transacción.
 
+## Alcance de integraciones y mocks
+- Para esta entrega usamos **mocks propios del equipo** y no los mocks definidos en el documento inicial de la hackathon. Los contratos de nuestros mocks viven en este repositorio (`services/api/`) y su implementación en `services/back-end/`.
+- La política KYC aprobada por Cumplimiento sigue siendo condición de lanzamiento. Mientras no esté disponible, las pruebas y demostraciones usan una **política KYC sintética de prueba** (pasos y verificaciones ficticios, sin documentos reales); su resultado no equivale a una aprobación de Cumplimiento.
+- Los eventos analíticos, la atribución de primer contacto, el gasto de adquisición y los reportes de onboarding, MAU y CAC se alimentan con datos sintéticos de nuestros mocks. Los valores obtenidos con ellos no constituyen resultados reales ni se comparan como tales con las metas de negocio.
+- Los comportamientos que el documento inicial de la hackathon daba por resueltos y que nuestros mocks aún no cubren se simularán con mocks propios, definidos y versionados en el repositorio antes de automatizar sus pruebas.
+- Este alcance no cambia los criterios de aceptación ni las definiciones de arriba: solo delimita contra qué se verifican en esta entrega. Pasar a producción exige reemplazar los mocks por las integraciones y la política KYC reales.
+
 ## Criterios de aceptación
 1. El flujo muestra la secuencia de pasos requeridos y el paso actual en todo momento.
 2. Ante información obligatoria faltante o inválida, se bloquea el avance y se indica cómo corregirla, conforme a la política KYC vigente.
