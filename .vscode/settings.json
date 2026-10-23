@@ -1,0 +1,58 @@
+{
+    "chat.tools.terminal.autoApprove": {
+        "/^openspec instructions proposal --schema spec-driven --json$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^openspec validate hu-01-signed-login-token --type change --strict$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^openspec instructions proposal --change hu-01-signed-login-token --schema spec-driven --json$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^openspec instructions tasks --change hu-01-signed-login-token --schema spec-driven --json$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^git -C 'c:/Users/Usuario/Documents/T17201-AlexanderAvila/reqflow-workspace/workshop-auth-backend' push$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^openspec schemas --json$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^openspec list --specs$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^openspec instructions specs --schema spec-driven --json$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^openspec instructions specs --change hu-01-signed-login-token --schema spec-driven --json$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^openspec instructions specs --change hu-01-signed-login-token --schema spec-driven --json \\| ConvertFrom-Json \\| Select-Object -ExpandProperty instruction$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "/^openspec validate auth-login-security-hardening --type change --strict$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "openspec": true,
+        "/^mvn -Dtest=AuthResourceTest test$/": {
+            "approve": true,
+            "matchCommandLine": true
+        },
+        "git -C 'c:/Users/Usuario/Documents/T17201-AlexanderAvila/reqflow-workspace/workshop-auth-backend'": true,
+        "/^\\(openspec instructions specs --change hu-01-wallet-onboarding --json \\| ConvertFrom-Json\\)\\.instruction$/": {
+            "approve": true,
+            "matchCommandLine": true
+        }
+    }
+}
