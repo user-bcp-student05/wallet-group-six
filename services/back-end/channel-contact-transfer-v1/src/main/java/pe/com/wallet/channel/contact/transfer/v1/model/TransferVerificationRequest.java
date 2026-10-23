@@ -10,9 +10,9 @@ import jakarta.validation.constraints.NotNull;
 public class TransferVerificationRequest {
 
     @NotNull
-    @DecimalMin("0.01")
-    @DecimalMax("99999999.99")
-    @Digits(integer = 8, fraction = 2)
+    @DecimalMin("0.10")
+    @DecimalMax("500.00")
+    @Digits(integer = 3, fraction = 2)
     private BigDecimal amount;
 
     public BigDecimal getAmount() {

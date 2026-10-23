@@ -46,7 +46,7 @@ public class MockContactTransferService {
         if (new BigDecimal("422.00").compareTo(request.getAmount()) == 0) {
             throw new ApiException(422, "HB0700", "No fue posible procesar la transferencia solicitada.");
         }
-        if (new BigDecimal("500.00").compareTo(request.getAmount()) == 0) {
+        if (new BigDecimal("499.99").compareTo(request.getAmount()) == 0) {
             throw new ApiException(500, "H99999", "Ocurrio un error interno al procesar la solicitud.");
         }
 

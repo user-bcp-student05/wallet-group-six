@@ -35,7 +35,7 @@ mvn test
   - `phone = RkFJTF81MDA=` => `500`
 - `authorization/verify`:
   - `amount = 422.00` => `422`
-  - `amount = 500.00` => `500`
+  - `amount = 499.99` => `500`
 - `execute`:
   - `description` contiene `fail422` => `422`
   - `description` contiene `fail500` => `500`

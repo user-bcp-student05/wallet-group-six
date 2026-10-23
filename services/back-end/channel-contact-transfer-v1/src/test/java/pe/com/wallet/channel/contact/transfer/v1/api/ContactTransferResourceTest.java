@@ -178,7 +178,7 @@ class ContactTransferResourceTest {
     void verifyTransferUnhappyPath400() {
         String requestBody = """
             {
-              "amount": 0.00
+              "amount": 0.09
             }
             """;
 
@@ -199,7 +199,7 @@ class ContactTransferResourceTest {
     void verifyTransferRejectsAmountAboveMaximum() {
         String requestBody = """
             {
-              "amount": 100000000.00
+              "amount": 500.01
             }
             """;
 
@@ -214,6 +214,27 @@ class ContactTransferResourceTest {
         .then()
             .statusCode(400)
             .body("code", equalTo("HB0305"));
+    }
+
+    @Test
+    void verifyTransferAcceptsMaximumAmount() {
+        String requestBody = """
+            {
+              "amount": 500.00
+            }
+            """;
+
+        given()
+            .contentType(ContentType.JSON)
+            .header("sessionId", SESSION_ID)
+            .header("Authorization", AUTHORIZATION)
+            .header("autentication", "mock-auth-header")
+            .body(requestBody)
+        .when()
+            .post("/contact-transfers/authorization/verify")
+        .then()
+            .statusCode(200)
+            .body("origin.name", equalTo("M**** P****"));
     }
 
     @Test

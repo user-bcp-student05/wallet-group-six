@@ -57,17 +57,17 @@ class VerifyTransferComponentTest {
     }
 
     @Test
-    @DisplayName("TC-007 CA-2 payment-confirmation: Importe dentro del menor límite -> amount 0.01 (mínimo) -> 200")
+    @DisplayName("TC-007 CA-2 payment-confirmation: Importe mínimo -> amount 0.10 -> 200")
     void tc007_verifyAcceptsMinimumAmount() {
-        authenticated().body(amountBody("0.01"))
+        authenticated().body(amountBody("0.10"))
             .when().post(VERIFY)
             .then().statusCode(200);
     }
 
     @Test
-    @DisplayName("TC-008 CA-2 payment-confirmation: Importe dentro del menor límite -> amount 99999999.99 (máximo) -> 200")
+    @DisplayName("TC-008 CA-2 payment-confirmation: Importe máximo -> amount 500.00 -> 200")
     void tc008_verifyAcceptsMaximumAmount() {
-        authenticated().body(amountBody("99999999.99"))
+        authenticated().body(amountBody("500.00"))
             .when().post(VERIFY)
             .then().statusCode(200);
     }
@@ -150,9 +150,9 @@ class VerifyTransferComponentTest {
 
     @Test
     @Tag("negative")
-    @DisplayName("TC-056 CA-6: verify amount 500.00 -> 500 H99999")
+    @DisplayName("TC-056 CA-6: verify amount 499.99 -> 500 H99999")
     void tc056_verifyInternalErrorReturns500() {
-        authenticated().body(amountBody("500.00"))
+        authenticated().body(amountBody("499.99"))
             .when().post(VERIFY)
             .then().statusCode(500).body("code", equalTo("H99999"));
     }

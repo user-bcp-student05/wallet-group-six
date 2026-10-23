@@ -91,7 +91,7 @@ class CommonRequestRulesComponentTest {
             withoutAuthorization().body(amountBody("25.50")).post(VERIFY).then().statusCode(401).extract().asString(),
             authenticated().body(amountBody("0")).post(VERIFY).then().statusCode(400).extract().asString(),
             authenticated().body(amountBody("422.00")).post(VERIFY).then().statusCode(422).extract().asString(),
-            authenticated().body(amountBody("500.00")).post(VERIFY).then().statusCode(500).extract().asString(),
+            authenticated().body(amountBody("499.99")).post(VERIFY).then().statusCode(500).extract().asString(),
         };
         for (String body : bodies) {
             var keys = io.restassured.path.json.JsonPath.from(body).getMap("$").keySet();
