@@ -14,7 +14,6 @@ import io.restassured.http.ContentType;
 class ContactTransferResourceTest {
 
     private static final String SESSION_ID = "session-123";
-    private static final String AUTENTICATION = "mock-auth-header";
     private static final String AUTHORIZATION = "Bearer mock-token";
 
     @Test
@@ -24,14 +23,14 @@ class ContactTransferResourceTest {
               "documentType": "DNI",
               "documentNumber": "QUJDRA==",
               "phone": "MTIzNA==",
-              "email": "ZGVtb0BleGFtcGxlLmNvbQ=="
+                            "email": "ZGVtb0BleGFtcGxlLmNvbQ==",
+                            "password": "c2VjcmV0MTIz"
             }
             """;
 
         given()
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
-            .header("autentication", AUTENTICATION)
             .header("Authorization", AUTHORIZATION)
             .body(requestBody)
         .when()
@@ -47,14 +46,14 @@ class ContactTransferResourceTest {
               "documentType": "DNI",
               "documentNumber": "RkFJTF80MjI=",
               "phone": "MTIzNA==",
-              "email": "ZGVtb0BleGFtcGxlLmNvbQ=="
+                            "email": "ZGVtb0BleGFtcGxlLmNvbQ==",
+                            "password": "c2VjcmV0MTIz"
             }
             """;
 
         given()
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
-            .header("autentication", AUTENTICATION)
             .header("Authorization", AUTHORIZATION)
             .body(requestBody)
         .when()
@@ -71,14 +70,14 @@ class ContactTransferResourceTest {
               "documentType": "DNI",
               "documentNumber": "QUJDRA==",
               "phone": "MTIzNA==",
-              "email": "ZGVtb0BleGFtcGxlLmNvbQ=="
+                            "email": "ZGVtb0BleGFtcGxlLmNvbQ==",
+                            "password": "c2VjcmV0MTIz"
             }
             """;
 
         given()
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
-            .header("autentication", AUTENTICATION)
             .body(requestBody)
         .when()
             .post("/affiliation-wallet")
@@ -98,7 +97,6 @@ class ContactTransferResourceTest {
         given()
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
-            .header("autentication", AUTENTICATION)
             .header("Authorization", AUTHORIZATION)
             .body(requestBody)
         .when()
@@ -120,7 +118,6 @@ class ContactTransferResourceTest {
         given()
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
-            .header("autentication", AUTENTICATION)
             .header("Authorization", AUTHORIZATION)
             .body(requestBody)
         .when()
@@ -141,7 +138,6 @@ class ContactTransferResourceTest {
         given()
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
-            .header("autentication", AUTENTICATION)
             .header("Authorization", AUTHORIZATION)
             .body(requestBody)
         .when()
@@ -163,7 +159,6 @@ class ContactTransferResourceTest {
         given()
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
-            .header("autentication", AUTENTICATION)
             .header("Authorization", AUTHORIZATION)
             .body(requestBody)
         .when()
@@ -184,7 +179,6 @@ class ContactTransferResourceTest {
         given()
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
-            .header("autentication", AUTENTICATION)
             .header("Authorization", AUTHORIZATION)
             .body(requestBody)
         .when()
@@ -205,7 +199,6 @@ class ContactTransferResourceTest {
         given()
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
-            .header("autentication", AUTENTICATION)
             .header("Authorization", AUTHORIZATION)
             .body(requestBody)
         .when()
@@ -227,7 +220,6 @@ class ContactTransferResourceTest {
         given()
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
-            .header("autentication", AUTENTICATION)
             .header("Authorization", AUTHORIZATION)
             .body(requestBody)
         .when()

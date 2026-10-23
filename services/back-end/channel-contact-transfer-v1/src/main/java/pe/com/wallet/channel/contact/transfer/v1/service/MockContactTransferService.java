@@ -51,8 +51,8 @@ public class MockContactTransferService {
         }
 
         return new TransferVerificationResponse(
-            new TransferOrigin("M**** P****"),
-            new TransferDestination("J**** R****", new FinancialEntity("01", "Yape"))
+            new TransferOrigin("Martin**** Pal****"),
+            new TransferDestination("Jua**** Reta****", new FinancialEntity("01", "Yape"))
         );
     }
 

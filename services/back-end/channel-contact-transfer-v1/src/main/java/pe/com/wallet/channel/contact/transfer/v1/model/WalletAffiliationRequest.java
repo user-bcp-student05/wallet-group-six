@@ -27,6 +27,11 @@ public class WalletAffiliationRequest {
     @Pattern(regexp = BASE64_PATTERN)
     private String email;
 
+    @NotBlank
+    @Size(min = 4, max = 4096)
+    @Pattern(regexp = BASE64_PATTERN)
+    private String password;
+
     public DocumentType getDocumentType() {
         return documentType;
     }
@@ -57,5 +62,13 @@ public class WalletAffiliationRequest {
 
     public void setEmail(String email) {
         this.email = email;
+    }
+
+    public String getPassword() {
+        return password;
+    }
+
+    public void setPassword(String password) {
+        this.password = password;
     }
 }

@@ -26,7 +26,6 @@ paths:
         - Wallet affiliation
       parameters:
         - $ref: '#/components/parameters/sessionId'
-        - $ref: '#/components/parameters/autentication'
       security:
         - bearerAuth: []
       requestBody:
@@ -78,7 +77,6 @@ paths:
         - Contact transfers
       parameters:
         - $ref: '#/components/parameters/sessionId'
-        - $ref: '#/components/parameters/autentication'
       security:
         - bearerAuth: []
       requestBody:
@@ -127,7 +125,6 @@ paths:
         - Contact transfers
       parameters:
         - $ref: '#/components/parameters/sessionId'
-        - $ref: '#/components/parameters/autentication'
       security:
         - bearerAuth: []
       requestBody:
@@ -180,7 +177,6 @@ paths:
         - Contact transfers
       parameters:
         - $ref: '#/components/parameters/sessionId'
-        - $ref: '#/components/parameters/autentication'
       security:
         - bearerAuth: []
       requestBody:
@@ -229,15 +225,6 @@ components:
         minLength: 1
         maxLength: 128
         pattern: '^[A-Za-z0-9._:-]{1,128}$'
-    autentication:
-      name: autentication
-      in: header
-      required: true
-      description: Header adicional de autenticación requerido por el servicio.
-      schema:
-        type: string
-        minLength: 1
-        maxLength: 2048
 
   responses:
     BadRequest:
