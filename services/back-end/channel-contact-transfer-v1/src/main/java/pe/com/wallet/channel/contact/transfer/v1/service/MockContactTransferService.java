@@ -25,16 +25,16 @@ public class MockContactTransferService {
 
     public void affiliateWallet(WalletAffiliationRequest request) {
         if (TRIGGER_422.equals(request.getDocumentNumber())) {
-            throw new ApiException(422, "H9999", "No fue posible completar la afiliacion a la billetera para el documento informado.");
+            throw new ApiException(422, "HB0700", "No fue posible completar la afiliacion a la billetera para el documento informado.");
         }
         if (TRIGGER_500.equals(request.getDocumentNumber())) {
-            throw new ApiException(500, "H9999", "Ocurrio un error interno al procesar la solicitud.");
+            throw new ApiException(500, "H99999", "Ocurrio un error interno al procesar la solicitud.");
         }
     }
 
     public List<FinancialEntity> searchFinancialEntities(FinancialEntitiesSearchRequest request) {
         if (TRIGGER_500.equals(request.getPhone())) {
-            throw new ApiException(500, "H9999", "Ocurrio un error interno al procesar la solicitud.");
+            throw new ApiException(500, "H99999", "Ocurrio un error interno al procesar la solicitud.");
         }
         return List.of(
             new FinancialEntity("01", "Yape"),
@@ -47,12 +47,12 @@ public class MockContactTransferService {
             throw new ApiException(422, "HB0700", "No fue posible procesar la transferencia solicitada.");
         }
         if (new BigDecimal("500.00").compareTo(request.getAmount()) == 0) {
-            throw new ApiException(500, "H9999", "Ocurrio un error interno al procesar la solicitud.");
+            throw new ApiException(500, "H99999", "Ocurrio un error interno al procesar la solicitud.");
         }
 
         return new TransferVerificationResponse(
-            new TransferOrigin("Martin**** Pal****"),
-            new TransferDestination("Jua**** Reta****", new FinancialEntity("01", "Yape"))
+            new TransferOrigin("M**** P****"),
+            new TransferDestination("J**** R****", new FinancialEntity("01", "Yape"))
         );
     }
 
@@ -62,7 +62,7 @@ public class MockContactTransferService {
             throw new ApiException(422, "HB0700", "No fue posible procesar la transferencia solicitada.");
         }
         if (normalized.contains("fail500")) {
-            throw new ApiException(500, "H9999", "Ocurrio un error interno al procesar la solicitud.");
+            throw new ApiException(500, "H99999", "Ocurrio un error interno al procesar la solicitud.");
         }
 
         return new TransferExecutionResponse(

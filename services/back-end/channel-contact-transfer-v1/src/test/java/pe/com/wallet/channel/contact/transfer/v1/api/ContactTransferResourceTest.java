@@ -60,7 +60,7 @@ class ContactTransferResourceTest {
             .post("/affiliation-wallet")
         .then()
             .statusCode(422)
-            .body("code", equalTo("H9999"));
+            .body("code", equalTo("HB0700"));
     }
 
     @Test
@@ -124,7 +124,7 @@ class ContactTransferResourceTest {
             .post("/contact-transfers/financial-entities/search")
         .then()
             .statusCode(500)
-            .body("code", equalTo("H9999"));
+            .body("code", equalTo("H99999"));
     }
 
     @Test

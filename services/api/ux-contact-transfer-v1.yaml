@@ -20,7 +20,7 @@ paths:
         | --- | --- | --- |
         | HB0305 | 400 | La solicitud no cumple con el formato o las restricciones de los campos. |
         | HB0302 | 401 | El token de autorización no fue enviado o no es válido. |
-        | H99999 | 422 | No fue posible completar la afiliación a la billetera para el documento informado. |
+        | HB0700 | 422 |No fue posible completar la afiliación a la billetera para el documento informado. |
         | H99999 | 500 | Ocurrió un error interno al procesar la solicitud. |
       tags:
         - Wallet affiliation
@@ -46,7 +46,7 @@ paths:
                 $ref: '#/components/schemas/ValidationError'
               example:
                 code: HB0305
-                description: El número de documento no cumple el formato requerido.
+                description: La solicitud no cumple con el formato o las restricciones de los campos.
         '401':
           $ref: '#/components/responses/Unauthorized'
         '422':
@@ -56,7 +56,7 @@ paths:
               schema:
                 $ref: '#/components/schemas/AffiliationError'
               example:
-                code: H9999
+                code: HB0700
                 description: No fue posible completar la afiliación a la billetera para el documento informado.
         '500':
           $ref: '#/components/responses/InternalError'
@@ -252,7 +252,7 @@ components:
           schema:
             $ref: '#/components/schemas/ApiError'
           example:
-            code: H0700
+            code: HB0700
             description: No fue posible procesar la transferencia solicitada.
     InternalError:
       description: Error interno al procesar la solicitud.
@@ -261,7 +261,7 @@ components:
           schema:
             $ref: '#/components/schemas/ApiError'
           example:
-            code: H9999
+            code: H99999
             description: Ocurrió un error interno al procesar la solicitud.
 
   schemas:
@@ -319,8 +319,8 @@ components:
           type: string
           description: Código de negocio para una afiliación no completada.
           enum:
-            - H9999
-          example: H9999
+            - HB0700
+          example: HB0700
         description:
           type: string
           description: Motivo por el que no se pudo completar la afiliación.
@@ -338,7 +338,7 @@ components:
         code:
           type: string
           description: Código que identifica el error de validación.
-          example: VALIDATION_ERROR
+          example: HB0305
         description:
           type: string
           description: Detalle del campo o formato que no pasó la validación.
@@ -437,8 +437,6 @@ components:
     TransferExecutionRequest:
       type: object
       additionalProperties: false
-      required:
-        - description
       properties:
         description:
           type: string
@@ -479,7 +477,7 @@ components:
           type: string
           minLength: 1
           maxLength: 50
-          example: H0700
+          example: HB0700
         description:
           type: string
           minLength: 1
