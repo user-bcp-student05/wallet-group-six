@@ -108,21 +108,21 @@ class AffiliationWalletComponentTest {
 
     @Test
     @Tag("negative")
-    @DisplayName("TC-084 Contrato affiliation-wallet: documento rechazado -> 422 H9999")
+    @DisplayName("TC-084 Contrato affiliation-wallet: documento rechazado -> 422 HB0700")
     void tc084_affiliationRejectedForDocumentReturns422() {
         authenticated().body(affiliationBody("DNI", FAIL_422, VALID_PHONE, EMAIL))
             .when().post(AFFILIATION)
             .then().statusCode(422)
-            .body("code", equalTo("H9999"))
+            .body("code", equalTo("HB0700"))
             .body("description", notNullValue());
     }
 
     @Test
     @Tag("negative")
-    @DisplayName("TC-085 Contrato affiliation-wallet: error interno -> 500 H9999")
+    @DisplayName("TC-085 Contrato affiliation-wallet: error interno -> 500 H99999")
     void tc085_affiliationInternalErrorReturns500() {
         authenticated().body(affiliationBody("DNI", FAIL_500, VALID_PHONE, EMAIL))
             .when().post(AFFILIATION)
-            .then().statusCode(500).body("code", equalTo("H9999"));
+            .then().statusCode(500).body("code", equalTo("H99999"));
     }
 }

@@ -32,6 +32,7 @@ class ContactTransferResourceTest {
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
             .header("Authorization", AUTHORIZATION)
+            .header("autentication", "mock-auth-header")
             .body(requestBody)
         .when()
             .post("/affiliation-wallet")
@@ -55,6 +56,7 @@ class ContactTransferResourceTest {
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
             .header("Authorization", AUTHORIZATION)
+            .header("autentication", "mock-auth-header")
             .body(requestBody)
         .when()
             .post("/affiliation-wallet")
@@ -98,6 +100,7 @@ class ContactTransferResourceTest {
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
             .header("Authorization", AUTHORIZATION)
+            .header("autentication", "mock-auth-header")
             .body(requestBody)
         .when()
             .post("/contact-transfers/financial-entities/search")
@@ -119,6 +122,7 @@ class ContactTransferResourceTest {
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
             .header("Authorization", AUTHORIZATION)
+            .header("autentication", "mock-auth-header")
             .body(requestBody)
         .when()
             .post("/contact-transfers/financial-entities/search")
@@ -139,6 +143,7 @@ class ContactTransferResourceTest {
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
             .header("Authorization", AUTHORIZATION)
+            .header("autentication", "mock-auth-header")
             .body(requestBody)
         .when()
             .post("/contact-transfers/authorization/verify")
@@ -160,6 +165,7 @@ class ContactTransferResourceTest {
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
             .header("Authorization", AUTHORIZATION)
+            .header("autentication", "mock-auth-header")
             .body(requestBody)
         .when()
             .post("/contact-transfers/authorization/verify")
@@ -172,7 +178,7 @@ class ContactTransferResourceTest {
     void verifyTransferUnhappyPath400() {
         String requestBody = """
             {
-              "amount": 0.09
+              "amount": 0.00
             }
             """;
 
@@ -180,6 +186,7 @@ class ContactTransferResourceTest {
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
             .header("Authorization", AUTHORIZATION)
+            .header("autentication", "mock-auth-header")
             .body(requestBody)
         .when()
             .post("/contact-transfers/authorization/verify")
@@ -192,7 +199,7 @@ class ContactTransferResourceTest {
     void verifyTransferRejectsAmountAboveMaximum() {
         String requestBody = """
             {
-              "amount": 500.01
+              "amount": 100000000.00
             }
             """;
 
@@ -200,6 +207,7 @@ class ContactTransferResourceTest {
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
             .header("Authorization", AUTHORIZATION)
+            .header("autentication", "mock-auth-header")
             .body(requestBody)
         .when()
             .post("/contact-transfers/authorization/verify")
@@ -220,6 +228,7 @@ class ContactTransferResourceTest {
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
             .header("Authorization", AUTHORIZATION)
+            .header("autentication", "mock-auth-header")
             .body(requestBody)
         .when()
             .post("/contact-transfers/execute")
@@ -241,6 +250,7 @@ class ContactTransferResourceTest {
             .contentType(ContentType.JSON)
             .header("sessionId", SESSION_ID)
             .header("Authorization", AUTHORIZATION)
+            .header("autentication", "mock-auth-header")
             .body(requestBody)
         .when()
             .post("/contact-transfers/execute")

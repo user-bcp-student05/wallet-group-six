@@ -102,11 +102,11 @@ class ExecuteTransferComponentTest {
 
     @Test
     @Tag("negative")
-    @DisplayName("TC-055 CA-6: execute con description fail500 -> 500 H9999")
+    @DisplayName("TC-055 CA-6: execute con description fail500 -> 500 H99999")
     void tc055_executeInternalErrorReturns500() {
         authenticated().body(descriptionBody("fail500"))
             .when().post(EXECUTE)
-            .then().statusCode(500).body("code", equalTo("H9999"));
+            .then().statusCode(500).body("code", equalTo("H99999"));
     }
 
     @ParameterizedTest

@@ -150,10 +150,10 @@ class VerifyTransferComponentTest {
 
     @Test
     @Tag("negative")
-    @DisplayName("TC-056 CA-6: verify amount 500.00 -> 500 H9999")
+    @DisplayName("TC-056 CA-6: verify amount 500.00 -> 500 H99999")
     void tc056_verifyInternalErrorReturns500() {
         authenticated().body(amountBody("500.00"))
             .when().post(VERIFY)
-            .then().statusCode(500).body("code", equalTo("H9999"));
+            .then().statusCode(500).body("code", equalTo("H99999"));
     }
 }

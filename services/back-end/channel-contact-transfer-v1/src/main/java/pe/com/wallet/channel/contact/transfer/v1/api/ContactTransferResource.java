@@ -38,9 +38,10 @@ public class ContactTransferResource {
     public Response affiliateWallet(
         @HeaderParam("sessionId") String sessionId,
         @HeaderParam("Authorization") String authorization,
+        @HeaderParam("autentication") String autentication,
         @NotNull @Valid WalletAffiliationRequest request
     ) {
-        validateHeaders(sessionId, authorization);
+        validateHeaders(sessionId, authorization, autentication);
         service.affiliateWallet(request);
         return Response.noContent().build();
     }
@@ -50,9 +51,10 @@ public class ContactTransferResource {
     public List<FinancialEntity> searchFinancialEntitiesByContact(
         @HeaderParam("sessionId") String sessionId,
         @HeaderParam("Authorization") String authorization,
+        @HeaderParam("autentication") String autentication,
         @NotNull @Valid FinancialEntitiesSearchRequest request
     ) {
-        validateHeaders(sessionId, authorization);
+        validateHeaders(sessionId, authorization, autentication);
         return service.searchFinancialEntities(request);
     }
 
@@ -61,9 +63,10 @@ public class ContactTransferResource {
     public TransferVerificationResponse verifyContactTransfer(
         @HeaderParam("sessionId") String sessionId,
         @HeaderParam("Authorization") String authorization,
+        @HeaderParam("autentication") String autentication,
         @NotNull @Valid TransferVerificationRequest request
     ) {
-        validateHeaders(sessionId, authorization);
+        validateHeaders(sessionId, authorization, autentication);
         return service.verifyTransfer(request);
     }
 
@@ -72,15 +75,20 @@ public class ContactTransferResource {
     public TransferExecutionResponse executeContactTransfer(
         @HeaderParam("sessionId") String sessionId,
         @HeaderParam("Authorization") String authorization,
+        @HeaderParam("autentication") String autentication,
         @NotNull @Valid TransferExecutionRequest request
     ) {
-        validateHeaders(sessionId, authorization);
+        validateHeaders(sessionId, authorization, autentication);
         return service.executeTransfer(request);
     }
 
-    private void validateHeaders(String sessionId, String authorization) {
+    private void validateHeaders(String sessionId, String authorization, String autentication) {
         if (authorization == null || authorization.isBlank() || !authorization.startsWith("Bearer ")) {
             throw new ApiException(401, "HB0302", "Se requiere un token de autorizacion valido.");
+        }
+
+        if (autentication == null || autentication.isBlank()) {
+            throw new ApiException(400, "HB0305", "La solicitud no cumple con el formato o las restricciones de los campos.");
         }
 
         if (sessionId == null || !SESSION_ID_PATTERN.matcher(sessionId).matches()) {

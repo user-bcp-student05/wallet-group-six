@@ -54,10 +54,10 @@ class SearchFinancialEntitiesComponentTest {
 
     @Test
     @Tag("negative")
-    @DisplayName("TC-088 Contrato financial-entities/search: phone que dispara error interno -> 500 H9999")
+    @DisplayName("TC-088 Contrato financial-entities/search: phone que dispara error interno -> 500 H99999")
     void tc088_searchInternalErrorReturns500() {
         authenticated().body("{\"phone\":\"" + FAIL_500 + "\"}")
             .when().post(SEARCH)
-            .then().statusCode(500).body("code", equalTo("H9999"));
+            .then().statusCode(500).body("code", equalTo("H99999"));
     }
 }
