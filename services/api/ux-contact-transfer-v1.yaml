@@ -1,0 +1,500 @@
+openapi: 3.0.3
+info:
+  title: UX Contact Transfer and Wallet Affiliation V1
+  version: v1
+  description: |
+    Permite afiliar personas a la billetera, buscar billeteras asociadas a un
+    teléfono, verificar los datos de una transferencia y ejecutarla.
+servers:
+  - url: /
+
+paths:
+  /affiliation-wallet:
+    post:
+      operationId: affiliateWallet
+      summary: Solicitar afiliación a la billetera
+      description: |
+        Solicita la afiliación de una persona a la billetera con sus datos de identificación y contacto.
+
+        | Código | HTTP | Descripción |
+        | --- | --- | --- |
+        | HB0305 | 400 | La solicitud no cumple con el formato o las restricciones de los campos. |
+        | HB0302 | 401 | El token de autorización no fue enviado o no es válido. |
+        | H99999 | 422 | No fue posible completar la afiliación a la billetera para el documento informado. |
+        | H99999 | 500 | Ocurrió un error interno al procesar la solicitud. |
+      tags:
+        - Wallet affiliation
+      parameters:
+        - $ref: '#/components/parameters/sessionId'
+        - $ref: '#/components/parameters/autentication'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        description: Datos de identificación y contacto. El número de documento, teléfono, correo y password se envían cifrados con RSA y codificados en Base64.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WalletAffiliationRequest'
+      responses:
+        '204':
+          description: Afiliación completada correctamente. No retorna contenido.
+        '400':
+          description: La solicitud no cumple con el formato o las restricciones de los campos.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ValidationError'
+              example:
+                code: HB0305
+                description: El número de documento no cumple el formato requerido.
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          description: No fue posible completar la afiliación solicitada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AffiliationError'
+              example:
+                code: H9999
+                description: No fue posible completar la afiliación a la billetera para el documento informado.
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /contact-transfers/financial-entities/search:
+    post:
+      operationId: searchFinancialEntitiesByContact
+      summary: Buscar entidades financieras por teléfono
+      description: |
+        Busca las billeteras digitales asociadas al número de teléfono indicado.
+
+        | Código | HTTP | Descripción |
+        | --- | --- | --- |
+        | HB0305 | 400 | El teléfono no cumple el formato requerido. |
+        | HB0302 | 401 | El token de autorización no fue enviado o no es válido. |
+        | H99999 | 500 | Ocurrió un error interno al procesar la solicitud. |
+      tags:
+        - Contact transfers
+      parameters:
+        - $ref: '#/components/parameters/sessionId'
+        - $ref: '#/components/parameters/autentication'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        description: Número telefónico del destinatario cifrado con RSA y codificado en Base64.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/FinancialEntitiesSearchRequest'
+      responses:
+        '200':
+          description: Entidades billeteras digitales asociadas al teléfono.
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/FinancialEntity'
+              example:
+                - code: '01'
+                  entity: Yape
+                - code: '02'
+                  entity: Plin
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /contact-transfers/authorization/verify:
+    post:
+      operationId: verifyContactTransfer
+      summary: Verificar transferencia
+      description: |
+        Verifica el monto de la transferencia y retorna el origen y destino
+        asociados al contexto de la sesión indicado en `sessionId`.
+
+        | Código | HTTP | Descripción |
+        | --- | --- | --- |
+        | HB0305 | 400 | El monto no cumple el formato o los límites permitidos. |
+        | HB0302 | 401 | El token de autorización no fue enviado o no es válido. |
+        | HB0700 | 422 | No fue posible verificar la transferencia solicitada. |
+        | H99999 | 500 | Ocurrió un error interno al procesar la solicitud. |
+      tags:
+        - Contact transfers
+      parameters:
+        - $ref: '#/components/parameters/sessionId'
+        - $ref: '#/components/parameters/autentication'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        description: Monto que se desea transferir.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferVerificationRequest'
+            example:
+              amount: 25.50
+      responses:
+        '200':
+          description: Datos del origen y destino mostrados para confirmar la transferencia.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferVerificationResponse'
+              example:
+                origin:
+                  name: M**** P****
+                destination:
+                  name: J**** R****
+                  financialEntity:
+                    code: '01'
+                    entity: Yape
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/TransferRejected'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+  /contact-transfers/execute:
+    post:
+      operationId: executeContactTransfer
+      summary: Ejecutar transferencia
+      description: |
+        Ejecuta la transferencia previamente verificada y asociada a la sesión.
+
+        | Código | HTTP | Descripción |
+        | --- | --- | --- |
+        | HB0305 | 400 | La descripción no cumple con el formato o las restricciones permitidas. |
+        | HB0302 | 401 | El token de autorización no fue enviado o no es válido. |
+        | HB0700 | 422 | No fue posible ejecutar la transferencia solicitada. |
+        | H99999 | 500 | Ocurrió un error interno al procesar la solicitud. |
+      tags:
+        - Contact transfers
+      parameters:
+        - $ref: '#/components/parameters/sessionId'
+        - $ref: '#/components/parameters/autentication'
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        description: Descripción que se asociará a la transferencia.
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/TransferExecutionRequest'
+            example:
+              description: Pago de almuerzo
+      responses:
+        '200':
+          description: Transferencia ejecutada.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TransferExecutionResponse'
+              example:
+                operationCode: CT202610230001
+                transactionDateTime: '2026-10-23T11:00:00-05:00'
+        '400':
+          $ref: '#/components/responses/BadRequest'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+        '422':
+          $ref: '#/components/responses/TransferRejected'
+        '500':
+          $ref: '#/components/responses/InternalError'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+      description: Token de acceso enviado en el header Authorization con el esquema Bearer.
+
+  parameters:
+    sessionId:
+      name: sessionId
+      in: header
+      required: true
+      description: Identificador de la sesión asociada a la solicitud.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 128
+        pattern: '^[A-Za-z0-9._:-]{1,128}$'
+    autentication:
+      name: autentication
+      in: header
+      required: true
+      description: Header adicional de autenticación requerido por el servicio.
+      schema:
+        type: string
+        minLength: 1
+        maxLength: 2048
+
+  responses:
+    BadRequest:
+      description: La solicitud no cumple con el formato o las restricciones de los campos.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: HB0305
+            description: El teléfono o el monto no cumple el formato requerido.
+    Unauthorized:
+      description: El token de autorización no fue enviado o no es válido.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: HB0302
+            description: Se requiere un token de autorización válido.
+    TransferRejected:
+      description: No fue posible verificar o ejecutar la transferencia.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: H0700
+            description: No fue posible procesar la transferencia solicitada.
+    InternalError:
+      description: Error interno al procesar la solicitud.
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ApiError'
+          example:
+            code: H9999
+            description: Ocurrió un error interno al procesar la solicitud.
+
+  schemas:
+    EncryptedSensitiveValue:
+      type: string
+      format: byte
+      description: Valor cifrado con una clave pública RSA y codificado en Base64.
+      minLength: 4
+      maxLength: 4096
+      pattern: '^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$'
+
+    WalletAffiliationRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - documentType
+        - documentNumber
+        - phone
+        - email
+        - password
+      properties:
+        documentType:
+          type: string
+          description: Tipo de documento de identidad.
+          enum:
+            - DNI
+            - CE
+            - PASSPORT
+          example: DNI
+        documentNumber:
+          description: Número de documento cifrado. El valor descifrado debe contener de 5 a 15 letras o números.
+          allOf:
+            - $ref: '#/components/schemas/EncryptedSensitiveValue'
+        phone:
+          description: Teléfono cifrado. El valor descifrado debe cumplir el formato internacional E.164.
+          allOf:
+            - $ref: '#/components/schemas/EncryptedSensitiveValue'
+        email:
+          description: Correo electrónico cifrado. El valor descifrado debe tener un máximo de 254 caracteres y formato de correo válido.
+          allOf:
+            - $ref: '#/components/schemas/EncryptedSensitiveValue'
+        password:
+          description: Password cifrado. El valor descifrado debe cumplir la política de contraseña definida por el negocio.
+          allOf:
+            - $ref: '#/components/schemas/EncryptedSensitiveValue'
+
+    AffiliationError:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - description
+      properties:
+        code:
+          type: string
+          description: Código de negocio para una afiliación no completada.
+          enum:
+            - H9999
+          example: H9999
+        description:
+          type: string
+          description: Motivo por el que no se pudo completar la afiliación.
+          minLength: 1
+          maxLength: 500
+          example: No fue posible completar la afiliación a la billetera para el documento informado.
+
+    ValidationError:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - description
+      properties:
+        code:
+          type: string
+          description: Código que identifica el error de validación.
+          example: VALIDATION_ERROR
+        description:
+          type: string
+          description: Detalle del campo o formato que no pasó la validación.
+          minLength: 1
+          maxLength: 500
+          example: El número de documento no cumple el formato requerido.
+
+    FinancialEntitiesSearchRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - phone
+      properties:
+        phone:
+          description: Teléfono del destinatario cifrado. El valor descifrado debe cumplir el formato internacional E.164.
+          allOf:
+            - $ref: '#/components/schemas/EncryptedSensitiveValue'
+
+    FinancialEntity:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - entity
+      properties:
+        code:
+          type: string
+          description: Código de la entidad financiera.
+          minLength: 1
+          maxLength: 10
+          pattern: '^[A-Za-z0-9_-]{1,10}$'
+          example: '01'
+        entity:
+          type: string
+          description: Nombre de la billetera digital.
+          minLength: 1
+          maxLength: 80
+          example: Yape
+
+    TransferVerificationRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - amount
+      properties:
+        amount:
+          type: number
+          format: double
+          description: Monto de la transferencia, expresado con hasta dos decimales.
+          minimum: 0.01
+          maximum: 99999999.99
+          multipleOf: 0.01
+          example: 25.50
+
+    TransferVerificationResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - origin
+        - destination
+      properties:
+        origin:
+          $ref: '#/components/schemas/TransferOrigin'
+        destination:
+          $ref: '#/components/schemas/TransferDestination'
+
+    TransferOrigin:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+      properties:
+        name:
+          type: string
+          description: Nombre de la persona que transfiere, ofuscado.
+          minLength: 1
+          maxLength: 100
+          example: M**** P****
+
+    TransferDestination:
+      type: object
+      additionalProperties: false
+      required:
+        - name
+        - financialEntity
+      properties:
+        name:
+          type: string
+          description: Nombre del destinatario, ofuscado.
+          minLength: 1
+          maxLength: 100
+          example: J**** R****
+        financialEntity:
+          $ref: '#/components/schemas/FinancialEntity'
+
+    TransferExecutionRequest:
+      type: object
+      additionalProperties: false
+      required:
+        - description
+      properties:
+        description:
+          type: string
+          description: Descripción que se asociará a la transferencia.
+          minLength: 1
+          maxLength: 140
+          pattern: '^[^\u0000-\u001F\u007F]{1,140}$'
+          example: Pago de almuerzo
+
+    TransferExecutionResponse:
+      type: object
+      additionalProperties: false
+      required:
+        - operationCode
+        - transactionDateTime
+      properties:
+        operationCode:
+          type: string
+          description: Código único de la operación ejecutada.
+          minLength: 1
+          maxLength: 64
+          pattern: '^[A-Za-z0-9_-]{1,64}$'
+          example: CT202610230001
+        transactionDateTime:
+          type: string
+          format: date-time
+          description: Fecha y hora de ejecución en formato RFC 3339.
+          example: '2026-10-23T11:00:00-05:00'
+
+    ApiError:
+      type: object
+      additionalProperties: false
+      required:
+        - code
+        - description
+      properties:
+        code:
+          type: string
+          minLength: 1
+          maxLength: 50
+          example: H0700
+        description:
+          type: string
+          minLength: 1
+          maxLength: 500
+          example: No fue posible procesar la transferencia solicitada.
