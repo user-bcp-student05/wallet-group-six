@@ -1,0 +1,184 @@
+<div class="app-shell" [class.auth-shell]="isAuthScreen">
+  <header class="topbar">
+    <a class="brand" href="#" aria-label="BCP, billetera 6, inicio" (click)="$event.preventDefault(); step.set('login')">
+      <img src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Logo-bcp-vector.svg" alt="BCP" />
+      <span class="brand-divider"></span>
+      <span class="brand-product">billetera</span>
+      <span class="brand-six" aria-hidden="true">6</span>
+    </a>
+    <div class="topbar-right">
+      @if (!isAuthScreen && step() !== 'success') {
+        <span class="secure-label"><svg lucideShieldCheck [size]="16"></svg> Entorno de demostración</span>
+        <button class="icon-button" type="button" aria-label="Cerrar sesión" title="Cerrar sesión" (click)="logout()"><svg lucideLogOut [size]="18"></svg></button>
+      } @else {
+        <span class="help-link"><svg lucideCircleHelp [size]="17"></svg> ¿Necesitas ayuda?</span>
+      }
+    </div>
+  </header>
+
+  @if (isAuthScreen) {
+    <main class="auth-layout">
+      <section class="visual-panel">
+        <img class="visual-photo" src="https://images.unsplash.com/photo-1556742049-0cfed4f6a45d?auto=format&fit=crop&w=1500&q=85" alt="Pago digital desde un teléfono móvil" />
+        <div class="visual-shade"></div>
+        <div class="visual-copy">
+          <span class="eyebrow"><span class="eyebrow-dot"></span> TU DINERO, A TU RITMO</span>
+          <h1>Todo fluye<br />cuando pagas<br /><em>con confianza.</em></h1>
+          <p>Una forma simple de mover tu dinero, estés donde estés.</p>
+        </div>
+        <div class="floating-transfer" aria-hidden="true"><div class="transfer-icon"><svg lucideCheck [size]="18"></svg></div><div><strong>Pago realizado</strong><span>Transferencia inmediata</span></div><b>S/ 28.50</b></div>
+        <div class="visual-caption">BCP · Una billetera para todos tus días</div>
+      </section>
+
+      <section class="auth-content">
+        @if (step() === 'login') {
+          <div class="form-panel auth-panel">
+            <div class="auth-heading"><span class="section-kicker">HOLA DE NUEVO</span><h2>Ingresa a tu<br />billetera</h2><p>Usa tus datos para continuar.</p></div>
+            @if (notice()) { <div class="notice-banner"><svg lucideBadgeCheck [size]="18"></svg>{{ notice() }}</div> }
+            <form class="form-stack" (ngSubmit)="login()">
+              <label class="field-label" for="login-phone">Número de celular</label>
+              <div class="input-wrap"><span class="prefix-code">+51</span><input id="login-phone" name="loginPhone" type="tel" [(ngModel)]="loginPhone" placeholder="987 654 321" inputmode="tel" autocomplete="tel-national" required pattern="[0-9 +()-]{9,16}" /><svg lucideSmartphone class="field-icon" [size]="18"></svg></div>
+              <label class="field-label" for="login-password">Contraseña</label>
+              <div class="input-wrap"><input id="login-password" name="loginPassword" [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="loginPassword" placeholder="Ingresa tu contraseña" autocomplete="current-password" required minlength="4" /><button class="field-action" type="button" [attr.aria-label]="showPassword() ? 'Ocultar contraseña' : 'Mostrar contraseña'" (click)="showPassword.set(!showPassword())"><svg lucideEyeOff [size]="18"></svg></button></div>
+              <button class="text-link forgot-link" type="button">¿Olvidaste tu contraseña?</button>
+              @if (errorMessage()) { <p class="form-error" role="alert">{{ errorMessage() }}</p> }
+              <button class="primary-button full-button" type="submit">Ingresar <svg lucideArrowRight [size]="18"></svg></button>
+            </form>
+            <div class="signup-prompt"><span>¿Aún no tienes una cuenta?</span><button type="button" class="text-link" (click)="openAffiliation()">Afíliate aquí</button></div>
+            <div class="auth-footnote"><svg lucideLockKeyhole [size]="15"></svg> Tus datos están protegidos</div>
+          </div>
+        } @else {
+          <div class="form-panel affiliation-panel">
+            <button class="back-link" type="button" (click)="step.set('login')"><svg lucideArrowLeft [size]="17"></svg> Volver al ingreso</button>
+            <div class="auth-heading compact-heading"><span class="section-kicker">EMPIEZA EN MINUTOS</span><h2>Afíliate a tu<br />billetera</h2><p>Completa tus datos para crear tu cuenta.</p></div>
+            <form class="form-stack affiliation-form" (ngSubmit)="affiliate()">
+              <div class="field-row">
+                <div class="field-group"><label class="field-label" for="document-type">Tipo de documento</label><div class="select-wrap"><select id="document-type" name="documentType" [(ngModel)]="documentType"><option value="DNI">DNI</option><option value="CE">Carné de extranjería</option><option value="PASSPORT">Pasaporte</option></select><svg lucideArrowRight class="select-chevron" [size]="15"></svg></div></div>
+                <div class="field-group"><label class="field-label" for="document-number">N.º de documento</label><input id="document-number" class="text-input" name="documentNumber" [(ngModel)]="documentNumber" placeholder="Ej. 71234567" required minlength="5" maxlength="15" /></div>
+              </div>
+              <label class="field-label" for="affiliation-phone">Número de celular</label>
+              <div class="input-wrap"><span class="prefix-code">+51</span><input id="affiliation-phone" name="affiliationPhone" type="tel" [(ngModel)]="affiliationPhone" placeholder="987 654 321" inputmode="tel" required pattern="[0-9 +()-]{9,16}" /><svg lucidePhone class="field-icon" [size]="17"></svg></div>
+              <label class="field-label" for="email">Correo electrónico</label>
+              <div class="input-wrap"><input id="email" name="email" type="email" [(ngModel)]="email" placeholder="nombre@correo.com" autocomplete="email" required /><svg lucideMail class="field-icon" [size]="17"></svg></div>
+              <label class="field-label" for="new-password">Crea una contraseña</label>
+              <div class="input-wrap"><input id="new-password" name="password" [type]="showPassword() ? 'text' : 'password'" [(ngModel)]="password" placeholder="Mínimo 8 caracteres" autocomplete="new-password" required minlength="8" /><button class="field-action" type="button" aria-label="Mostrar u ocultar contraseña" (click)="showPassword.set(!showPassword())"><svg lucideEye [size]="18"></svg></button></div>
+              @if (errorMessage()) { <p class="form-error" role="alert">{{ errorMessage() }}</p> }
+              <button class="primary-button full-button" type="submit" [disabled]="busy()">{{ busy() ? 'Enviando solicitud...' : 'Afiliarme' }} <svg lucideArrowRight [size]="18"></svg></button>
+            </form>
+            <p class="legal-note">Al continuar, aceptas el uso de tus datos para gestionar tu afiliación.</p>
+          </div>
+        }
+      </section>
+    </main>
+  } @else {
+    <main class="journey-layout">
+      <aside class="journey-sidebar">
+        <div class="sidebar-intro"><span class="section-kicker">TRANSFERENCIAS</span><h2>Envía dinero<br />en un instante.</h2><p>De celular a celular, sin complicaciones.</p></div>
+        <nav class="step-list" aria-label="Progreso de la transferencia">
+          @for (item of transferSteps; track item.id; let index = $index) {
+            <div class="step-item" [class.current]="activeTransferIndex === index" [class.completed]="activeTransferIndex > index || step() === 'success'">
+              <span class="step-marker">@if (activeTransferIndex > index || step() === 'success') { <svg lucideCheck [size]="15"></svg> } @else { {{ index + 1 }} }</span><span class="step-name">{{ item.label }}</span>
+              @if (index < transferSteps.length - 1) { <span class="step-connector"></span> }
+            </div>
+          }
+        </nav>
+        <div class="sidebar-note"><svg lucideShieldCheck [size]="19"></svg><span>Una experiencia segura, respaldada por BCP.</span></div>
+      </aside>
+
+      <section class="journey-content">
+        <div class="journey-topline">
+          @if (step() !== 'success') { <button class="back-link" type="button" (click)="goBack()"><svg lucideArrowLeft [size]="17"></svg> Atrás</button> }
+          <span class="journey-counter">@if (activeTransferIndex >= 0) { PASO {{ activeTransferIndex + 1 }} DE 5 }</span>
+        </div>
+
+        @if (step() === 'phone') {
+          <div class="journey-panel">
+            <span class="section-kicker">PAGO A CONTACTO</span><h1>¿A quién le<br />enviamos?</h1><p class="panel-description">Ingresa el celular asociado a la billetera de tu destinatario.</p>
+            <form class="form-stack journey-form" (ngSubmit)="searchRecipient()">
+              <label class="field-label" for="recipient-phone">Celular del destinatario</label>
+              <div class="input-wrap large-input"><span class="prefix-code">+51</span><input id="recipient-phone" name="recipientPhone" type="tel" [(ngModel)]="recipientPhone" placeholder="987 654 321" inputmode="tel" autocomplete="tel-national" required pattern="[0-9 +()-]{9,16}" /><svg lucidePhone class="field-icon" [size]="19"></svg></div>
+              <p class="field-hint">Solo necesitas su número de celular para empezar.</p>
+              @if (errorMessage()) { <p class="form-error" role="alert">{{ errorMessage() }}</p> }
+              <button class="primary-button full-button" type="submit" [disabled]="busy()">{{ busy() ? 'Buscando billeteras...' : 'Continuar' }} <svg lucideArrowRight [size]="18"></svg></button>
+            </form>
+          </div>
+        }
+
+        @if (step() === 'entities') {
+          <div class="journey-panel">
+            <span class="section-kicker">DESTINATARIO</span><h1>Elige su<br />billetera</h1><p class="panel-description">Encontramos estas entidades para <strong>{{ formatPhone(recipientPhone) }}</strong>.</p>
+            <div class="entity-list" role="radiogroup" aria-label="Entidades financieras disponibles">
+              @for (entity of entities(); track entity.code) {
+                <button class="entity-option" type="button" role="radio" [attr.aria-checked]="selectedEntity()?.code === entity.code" [class.selected]="selectedEntity()?.code === entity.code" (click)="selectEntity(entity)">
+                  <span class="entity-mark" [class.yape-mark]="entity.entity.toLowerCase() === 'yape'" [class.plin-mark]="entity.entity.toLowerCase() === 'plin'">{{ entity.entity.slice(0, 1) }}</span><span class="entity-copy"><strong>{{ entity.entity }}</strong><small>Billetera digital</small></span><span class="radio-indicator"><span></span></span>
+                </button>
+              }
+            </div>
+            @if (errorMessage()) { <p class="form-error" role="alert">{{ errorMessage() }}</p> }
+            <button class="primary-button full-button" type="button" (click)="continueToAmount()">Continuar <svg lucideArrowRight [size]="18"></svg></button>
+          </div>
+        }
+
+        @if (step() === 'verify') {
+          <div class="journey-panel">
+            <span class="section-kicker">MONTO A TRANSFERIR</span><h1>¿Cuánto<br />quieres enviar?</h1><p class="panel-description">El dinero llegará a la billetera que elegiste.</p>
+            <div class="recipient-strip"><span class="recipient-avatar"><svg lucideUserRound [size]="19"></svg></span><span><strong>{{ formatPhone(recipientPhone) }}</strong><small>{{ selectedEntity()?.entity }} · Destinatario</small></span><svg lucideCheckCircle2 class="verified-icon" [size]="19"></svg></div>
+            <form class="form-stack journey-form" (ngSubmit)="verifyTransfer()">
+              <label class="field-label" for="amount">Monto</label>
+              <div class="amount-wrap"><span>S/</span><input id="amount" name="amount" type="number" [(ngModel)]="amount" placeholder="0.00" min="0.01" max="99999999.99" step="0.01" inputmode="decimal" required /><span class="currency-label">SOLES</span></div>
+              <p class="field-hint">Monto mínimo S/ 0.01</p>
+              @if (errorMessage()) { <p class="form-error" role="alert">{{ errorMessage() }}</p> }
+              <button class="primary-button full-button" type="submit" [disabled]="busy()">{{ busy() ? 'Verificando...' : 'Continuar' }} <svg lucideArrowRight [size]="18"></svg></button>
+            </form>
+          </div>
+        }
+
+        @if (step() === 'confirm') {
+          <div class="journey-panel confirmation-panel">
+            <span class="section-kicker">REVISA LOS DATOS</span><h1>Confirma tu<br />transferencia</h1>
+            <div class="amount-summary"><span>Vas a enviar</span><strong>S/ {{ formattedAmount }}</strong></div>
+            <div class="people-summary">
+              <div class="person-row"><span class="person-avatar origin-avatar">{{ verification()?.origin?.name?.charAt(0) || 'M' }}</span><span class="person-data"><small>Desde</small><strong>{{ verification()?.origin?.name }}</strong><em>{{ formatPhone(originPhone()) }} · Mi billetera BCP</em></span><span class="person-side-label">ORIGEN</span></div>
+              <div class="people-connector"><span></span></div>
+              <div class="person-row"><span class="person-avatar destination-avatar">{{ verification()?.destination?.name?.charAt(0) || 'D' }}</span><span class="person-data"><small>Para</small><strong>{{ verification()?.destination?.name }}</strong><em>{{ formatPhone(recipientPhone) }} · {{ destinationEntity?.entity }}</em></span><span class="person-side-label">DESTINO</span></div>
+            </div>
+            <form class="form-stack journey-form" (ngSubmit)="confirmTransfer()">
+              <label class="field-label" for="reference">Agrega una referencia <span class="optional-label">OPCIONAL</span></label>
+              <input id="reference" class="text-input" name="reference" [(ngModel)]="reference" placeholder="Ej. almuerzo, regalo..." maxlength="140" />
+              @if (errorMessage()) { <p class="form-error" role="alert">{{ errorMessage() }}</p> }
+              <button class="primary-button full-button" type="submit" [disabled]="busy()">{{ busy() ? 'Procesando pago...' : 'Confirmar transferencia' }} <svg lucideArrowRight [size]="18"></svg></button>
+            </form>
+            <p class="secure-caption"><svg lucideLockKeyhole [size]="15"></svg> Transferencia protegida con seguridad BCP</p>
+          </div>
+        }
+
+        @if (step() === 'success') {
+          <div class="journey-panel success-panel">
+            <div class="success-emblem"><span class="success-ring"><svg lucideCheck [size]="32"></svg></span><span class="success-spark spark-one"></span><span class="success-spark spark-two"></span><span class="success-spark spark-three"></span></div>
+            <span class="section-kicker success-kicker">TRANSFERENCIA REALIZADA</span><h1>¡Listo,<br />ya está enviado!</h1><p class="panel-description">Tu dinero está en camino a su destino.</p>
+            <div class="receipt-card">
+              <div class="receipt-brandbar">
+                <img class="receipt-bcp-logo" src="https://upload.wikimedia.org/wikipedia/commons/0/0d/Logo-bcp-vector.svg" alt="BCP" />
+                <span class="receipt-brand-divider"></span>
+                <span class="receipt-document-label">CONSTANCIA DIGITAL</span>
+                <span class="receipt-entity-logo" [class.yape-logo]="destinationEntity?.entity?.toLowerCase() === 'yape'" [class.plin-logo]="destinationEntity?.entity?.toLowerCase() === 'plin'">{{ destinationEntity?.entity?.toLowerCase() }}</span>
+              </div>
+              <div class="receipt-amount"><small>Monto enviado</small><strong>S/ {{ formattedAmount }}</strong><span><svg lucideCheckCircle2 [size]="15"></svg> Operación exitosa</span></div>
+              <div class="receipt-divider"></div>
+              <div class="receipt-row"><span>Desde</span><strong>{{ verification()?.origin?.name }} · BCP</strong></div>
+              <div class="receipt-row"><span>Celular origen</span><strong>{{ formatPhone(originPhone()) }}</strong></div>
+              <div class="receipt-row"><span>Para</span><strong>{{ verification()?.destination?.name }}</strong></div>
+              <div class="receipt-row"><span>Celular</span><strong>{{ formatPhone(recipientPhone) }}</strong></div>
+              <div class="receipt-row"><span>Entidad</span><strong>{{ destinationEntity?.entity }}</strong></div>
+              <div class="receipt-row"><span>Fecha y hora</span><strong>{{ formatDate(transferResult()?.transactionDateTime) }}</strong></div>
+              <div class="receipt-code"><span>CÓDIGO DE OPERACIÓN</span><strong>{{ transferResult()?.operationCode }}</strong></div>
+            </div>
+            <button class="secondary-button full-button" type="button" (click)="downloadReceipt()"><svg lucideDownload [size]="18"></svg> Descargar constancia PDF</button>
+            <button class="text-link new-transfer" type="button" (click)="restart()">Hacer otra transferencia <svg lucideArrowRight [size]="16"></svg></button>
+          </div>
+        }
+      </section>
+    </main>
+  }
+  <footer class="page-footer"><span>© 2026 BCP</span><span class="footer-separator"></span><span>Una billetera para todos tus días</span><span class="footer-spacer"></span><span class="demo-status"><span></span> DEMO LOCAL</span></footer>
+</div>

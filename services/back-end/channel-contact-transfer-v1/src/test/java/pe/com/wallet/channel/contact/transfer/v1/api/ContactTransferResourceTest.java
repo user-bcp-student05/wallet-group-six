@@ -144,7 +144,7 @@ class ContactTransferResourceTest {
             .post("/contact-transfers/authorization/verify")
         .then()
             .statusCode(200)
-            .body("origin.name", equalTo("M**** P****"))
+            .body("origin.name", equalTo("Martin**** Pal****"))
             .body("destination.financialEntity.code", equalTo("01"));
     }
 
